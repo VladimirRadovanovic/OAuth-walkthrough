@@ -1,9 +1,14 @@
+from http import client
 import os
-from flask import Flask, render_template, request, session, redirect
+from flask import Flask, render_template, request, session, redirect, url_for
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect, generate_csrf
-from flask_login import LoginManager
+from flask_login import LoginManager, login_user
+from authlib.integrations.flask_client import OAuth
+
+from app.models import User
+
 
 from .models import db, User
 from .api.user_routes import user_routes
@@ -14,6 +19,7 @@ from .seeds import seed_commands
 from .config import Config
 
 app = Flask(__name__)
+oauth = OAuth(app)
 
 # Setup login manager
 login = LoginManager(app)
@@ -70,3 +76,48 @@ def react_root(path):
     if path == 'favicon.ico':
         return app.send_static_file('favicon.ico')
     return app.send_static_file('index.html')
+
+
+
+
+google = oauth.register(
+    name='google',
+    client_id='762534377906-bfbf53hdq8e6h1prf1fhv5dalecmeso6.apps.googleusercontent.com',
+    client_secret='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',
+    access_token_url='https://accounts.google.com/o/oauth2/token',
+    access_token_params=None,
+    authorize_url='https://accounts.google.com/o/oauth2/auth',
+    authorize_params=None,
+    api_base_url='https://www.googleapis.com/oauth2/v1/',
+    client_kwargs={'scope': 'openid profile email'},
+    jwks_uri="https://www.googleapis.com/oauth2/v3/certs",
+)
+
+
+@app.route('/login/google')
+def google_login():
+    google = oauth.create_client('google')
+    redirect_uri = url_for('authorize', _external=True)
+    return oauth.google.authorize_redirect(redirect_uri)
+
+
+@app.route('/authorize')
+def authorize():
+    print('in the authorize!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 11')
+    google = oauth.create_client('google')
+    print(' 2in the authorize!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 11')
+
+    token = google.authorize_access_token()
+    print('3in the authorize!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 11')
+
+    resp = google.get('userinfo')
+    print(resp.json(), 'response in route WTF&&&&&&&&&&&&&&&&&&&&&&&&&&')
+    # resp.raise_for_status()
+    profile = resp.json()
+    # do something with the token and profile
+    print(profile['email'], '\n!!!!!!!!!!!!!!!!!!!!', token, '\n!!!!!!!!!!!!!')
+    user = User.query.filter(User.email == profile['email']).first()
+    login_user(user)
+    # return user.to_dict()
+    # n_user=user.to_dict()
+    return redirect("http://localhost:3000", 302, user)

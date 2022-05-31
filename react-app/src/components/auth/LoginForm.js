@@ -30,7 +30,12 @@ const LoginForm = () => {
     return <Redirect to='/' />;
   }
 
+  const googleLogin = () => {
+    window.open('http://localhost:5000/login/google', '_self')
+  }
+
   return (
+    <>
     <form onSubmit={onLogin}>
       <div>
         {errors.map((error, ind) => (
@@ -59,6 +64,8 @@ const LoginForm = () => {
         <button type='submit'>Login</button>
       </div>
     </form>
+    <button onClick={googleLogin}>Google Login</button>
+    </>
   );
 };
 
