@@ -4,10 +4,11 @@ from flask import Flask, render_template, request, session, redirect, url_for
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect, generate_csrf
-from flask_login import LoginManager, login_user
+from flask_login import LoginManager, login_user, current_user
 from authlib.integrations.flask_client import OAuth
 
 from app.models import User
+from app.api.auth_routes import login
 
 
 from .models import db, User
@@ -98,7 +99,7 @@ google = oauth.register(
 def google_login():
     google = oauth.create_client('google')
     redirect_uri = url_for('authorize', _external=True)
-    return oauth.google.authorize_redirect(redirect_uri)
+    return google.authorize_redirect(redirect_uri)
 
 
 @app.route('/authorize')
@@ -118,6 +119,7 @@ def authorize():
     print(profile['email'], '\n!!!!!!!!!!!!!!!!!!!!', token, '\n!!!!!!!!!!!!!')
     user = User.query.filter(User.email == profile['email']).first()
     login_user(user)
-    # return user.to_dict()
-    # n_user=user.to_dict()
-    return redirect("http://localhost:3000", 302, user)
+    print(current_user.is_authenticated, '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!(((##################')
+
+    return redirect("http://localhost:3000", 302)
+    # return url_for('auth.login')

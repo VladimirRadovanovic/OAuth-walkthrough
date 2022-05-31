@@ -30,8 +30,9 @@ const LoginForm = () => {
     return <Redirect to='/' />;
   }
 
-  const googleLogin = () => {
-    window.open('http://localhost:5000/login/google', '_self')
+  const googleLogin = async () => {
+    await window.open('http://localhost:5000/login/google', '_self')
+
   }
 
   return (
