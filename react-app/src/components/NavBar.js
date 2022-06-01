@@ -2,12 +2,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-import { authenticate } from '../store/session';
 import LogoutButton from './auth/LogoutButton';
 
 
 
-const NavBar = ({ loaded }) => {
+const NavBar = () => {
 
   const user = useSelector(state => state.session.user)
 
