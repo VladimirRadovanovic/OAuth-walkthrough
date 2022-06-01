@@ -33,7 +33,6 @@ def login():
     """
     Logs a user in
     """
-    print('touching the login url')
     form = LoginForm()
     # Get the csrf_token from the request cookie and put it into the
     # form manually to validate_on_submit can be used
