@@ -83,8 +83,8 @@ def react_root(path):
 
 google = oauth.register(
     name='google',
-    client_id='762534377906-bfbf53hdq8e6h1prf1fhv5dalecmeso6.apps.googleusercontent.com',
-    client_secret='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',
+    client_id=app.config['GOOGLE_CLIENT_ID'],
+    client_secret=app.config['GOOGLE_CLIENT_SECRET'],
     access_token_url='https://accounts.google.com/o/oauth2/token',
     access_token_params=None,
     authorize_url='https://accounts.google.com/o/oauth2/auth',
@@ -104,22 +104,23 @@ def google_login():
 
 @app.route('/authorize')
 def authorize():
-    print('in the authorize!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 11')
+
     google = oauth.create_client('google')
-    print(' 2in the authorize!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 11')
-
     token = google.authorize_access_token()
-    print('3in the authorize!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 11')
-
     resp = google.get('userinfo')
-    print(resp.json(), 'response in route WTF&&&&&&&&&&&&&&&&&&&&&&&&&&')
-    # resp.raise_for_status()
     profile = resp.json()
-    # do something with the token and profile
-    print(profile['email'], '\n!!!!!!!!!!!!!!!!!!!!', token, '\n!!!!!!!!!!!!!')
+
     user = User.query.filter(User.email == profile['email']).first()
-    login_user(user)
-    print(current_user.is_authenticated, '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!(((##################')
+    if user:
+        login_user(user)
+    else:
+        user = User(
+            username=profile['name'],
+            email=profile['email'],
+            password=token['id_token']
+        )
+        db.session.add(user)
+        db.session.commit()
+        login_user(user)
 
     return redirect("http://localhost:3000", 302)
-    # return url_for('auth.login')
