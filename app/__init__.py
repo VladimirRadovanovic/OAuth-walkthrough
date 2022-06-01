@@ -81,10 +81,17 @@ def react_root(path):
 
 
 
-# Register a remote application on the OAuth registry via oauth.register method
+# Register a remote application on the OAuth registry
 google = oauth.register(
     name='google',
+
+    # Client ID is a publicly exposed string that is used by the service
+    # API to identify the application
     client_id=app.config['GOOGLE_CLIENT_ID'],
+
+    # Client Secret is used to authenticate the identity of the application
+    # to the service API when the application requests to access a user’s
+    # account, and must be kept private between the application and the API
     client_secret=app.config['GOOGLE_CLIENT_SECRET'],
 
     # ACCESS_TOKEN_URL: URL to fetch OAuth access token
@@ -101,7 +108,12 @@ google = oauth.register(
     api_base_url='https://www.googleapis.com/oauth2/v1/',
 
     # Is a dict configuration to pass extra
-    # parameters to OAuth1Session or OAuth2Session
+    #  parameters to OAuth1Session or OAuth2Session
+    # Scope: specifies the level of access that the application is requesting
+    # OpenID Connect 1.0 is a simple identity layer on top of
+    #  the OAuth 2.0 protocol. It allows Clients to verify the
+    #  identity of the End-User based on the authentication performed
+    #  by an Authorization Server
     client_kwargs={'scope': 'openid profile email'},
 
     # jwks_uri: The URL to get provider’s public JWKS(JSON Web Key Set )
