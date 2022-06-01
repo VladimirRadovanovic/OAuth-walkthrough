@@ -20,6 +20,7 @@ from .seeds import seed_commands
 from .config import Config
 
 app = Flask(__name__)
+# Create a registry with OAuth object
 oauth = OAuth(app)
 
 # Setup login manager
@@ -80,17 +81,33 @@ def react_root(path):
 
 
 
-
+# Register a remote application on the OAuth registry via oauth.register method
 google = oauth.register(
     name='google',
     client_id=app.config['GOOGLE_CLIENT_ID'],
     client_secret=app.config['GOOGLE_CLIENT_SECRET'],
+
+    # ACCESS_TOKEN_URL: URL to fetch OAuth access token
     access_token_url='https://accounts.google.com/o/oauth2/token',
+
+    # ACCESS_TOKEN_PARAMS: Extra parameters for Access Token endpoint
     access_token_params=None,
+
+    # AUTHORIZE_URL: Endpoint for user authorization
     authorize_url='https://accounts.google.com/o/oauth2/auth',
     authorize_params=None,
+
+    # A base URL endpoint to make requests simple
     api_base_url='https://www.googleapis.com/oauth2/v1/',
+
+    # Is a dict configuration to pass extra
+    # parameters to OAuth1Session or OAuth2Session
     client_kwargs={'scope': 'openid profile email'},
+
+    # jwks_uri: The URL to get provider’s public JWKS(JSON Web Key Set )
+    # The JSON Web Key Set (JWKS) is a set of keys containing the public
+    # keys used to verify any JSON Web Token (JWT)
+    # issued by the authorization server
     jwks_uri="https://www.googleapis.com/oauth2/v3/certs",
 )
 
