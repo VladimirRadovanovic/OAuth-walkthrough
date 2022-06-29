@@ -1,6 +1,8 @@
-# Flask React Project
+# OAuth 2.0/OpenId Connect Workshop
 
-This is the starter for the Flask React project.
+Google Slide:
+https://docs.google.com/presentation/d/1ZIUQqUMR1crlZhs5G_muzht2035KiTdXojqvVKuVS6A/edit#slide=id.p
+
 
 ## Getting started
 1. Clone this repository (only this branch)

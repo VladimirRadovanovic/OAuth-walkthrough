@@ -31,6 +31,9 @@ const LoginForm = () => {
   }
 
   const googleLogin = () => {
+
+    // FOR DEVELOPMENT, THIS WOULD NEED TO REDIRECT TO AN APPROPRIATE
+    // URL AND NOT LOCALHOST IF THE APP WAS TO BE DEPLOYED
     window.open('http://localhost:5000/login/google', '_self')
 
   }
