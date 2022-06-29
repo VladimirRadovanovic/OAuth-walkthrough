@@ -114,6 +114,7 @@ google = oauth.register(
     #  the OAuth 2.0 protocol. It allows Clients to verify the
     #  identity of the End-User based on the authentication performed
     #  by an Authorization Server
+    # If we wanted to include address in this scope:  https://www.googleapis.com/auth/user.addresses.read
     client_kwargs={'scope': 'openid profile email'},
 
     # jwks_uri: The URL to get provider’s public JWKS(JSON Web Key Set )
@@ -127,6 +128,8 @@ google = oauth.register(
 @app.route('/login/google')
 def google_login():
     google = oauth.create_client('google')
+    # UPGRADE THE url_for SCHEME TO HTTPS FOR PRODUCTION: _scheme='https'
+    # EXAMPLE: redirect_uri = url_for('authorize', _external=True, _scheme='https)
     redirect_uri = url_for('authorize', _external=True)
     return google.authorize_redirect(redirect_uri)
 
@@ -152,4 +155,6 @@ def authorize():
         db.session.commit()
         login_user(user)
 
+    # FOR DEVELOPMENT, THIS WOULD NEED TO REDIRECT TO AN APPROPRIATE
+    # URL AND NOT LOCALHOST IF THE APP WAS TO BE DEPLOYED
     return redirect("http://localhost:3000", 302)
