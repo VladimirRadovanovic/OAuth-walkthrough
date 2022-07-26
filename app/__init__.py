@@ -142,7 +142,7 @@ def authorize():
     resp = google.get('userinfo')
     profile = resp.json()
 
-
+    print(google, 'google!!'*30)
     user = User.query.filter(User.email == profile['email']).first()
 
     # FOR DEVELOPMENT, THIS WOULD NEED TO REDIRECT TO AN APPROPRIATE
