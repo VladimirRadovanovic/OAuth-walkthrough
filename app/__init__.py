@@ -142,19 +142,13 @@ def authorize():
     resp = google.get('userinfo')
     profile = resp.json()
 
+
     user = User.query.filter(User.email == profile['email']).first()
-    if user:
-        login_user(user)
-    else:
-        user = User(
-            username=profile['name'],
-            email=profile['email'],
-            password=token['id_token']
-        )
-        db.session.add(user)
-        db.session.commit()
-        login_user(user)
 
     # FOR DEVELOPMENT, THIS WOULD NEED TO REDIRECT TO AN APPROPRIATE
     # URL AND NOT LOCALHOST IF THE APP WAS TO BE DEPLOYED
-    return redirect("http://localhost:3000", 302)
+    if user:
+        login_user(user)
+        return redirect("http://localhost:3000", 302)
+    else:
+        return redirect("http://localhost:3000/sign-up", 302)
